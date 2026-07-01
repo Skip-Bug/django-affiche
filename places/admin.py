@@ -1,11 +1,14 @@
 from django.contrib import admin
-from .models import Place, Image
+
+from .models import Image, Place
 
 
 @admin.register(Place)
 class PlaceAdmin(admin.ModelAdmin):
     pass
+
+
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    ordering = ('place', 'order')
+    ordering = ("place", "order")
     pass
