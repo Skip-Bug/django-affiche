@@ -7,4 +7,5 @@ class PlaceAdmin(admin.ModelAdmin):
     pass
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
+    ordering = ('place', 'order')
     pass

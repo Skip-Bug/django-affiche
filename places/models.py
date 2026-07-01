@@ -28,6 +28,10 @@ class Image(models.Model):
         null=True,
         blank=True,
         )
-
+    order = models.PositiveIntegerField('Порядковый номер', default=0)
+    class Meta:
+        ordering = ['order']
+        
     def __str__(self):
-        return f"{self.id} {self.place.title}"
+        return f"{self.order} {self.place.title}"
+    
