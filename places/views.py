@@ -1,12 +1,25 @@
-from django.http import HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 
 from .models import Place
 
 
 def place_desc(request, place_id):
-    place = get_object_or_404(Place, id=place_id)
-    return HttpResponse(place.title)
+    place = get_object_or_404(
+        Place.objects.prefetch_related("images"),
+        id=place_id,
+    )
+    images = place.images.all().order_by("order")
+
+    descriptions = {
+        "title": place.title,
+        "imgs": [img.image.url for img in images],
+        "description_short": place.description_short,
+        "description_long": place.description_long,
+        "coordinates": {"lat": place.lat, "lng": place.lng},
+    }
+
+    return JsonResponse(descriptions, json_dumps_params={"ensure_ascii": False})
 
 
 def start_page(request):
@@ -16,7 +29,10 @@ def start_page(request):
         features.append(
             {
                 "type": "Feature",
-                "geometry": {"type": "Point", "coordinates": [place.lng, place.lat]},
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [place.lng, place.lat],
+                },
                 "properties": {
                     "title": place.title,
                     "placeId": place.id,
